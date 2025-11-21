@@ -16,7 +16,7 @@ public class Pi
     public static void main(String[] args) throws Exception 
     {
 	long total=0;
-	// 10 workers, 50000 iterations each
+	// 10 workers, 50000 iterations eac
 	total = new Master().doRun(50000, 10);
 	System.out.println("total from Master = " + total);
     }

@@ -23,8 +23,12 @@ class PiMonteCarlo {
 		this.nThrows = i; // Nombre de lancer
 		this.value = 0;
 	}
+
+    public int getnThrows(){
+        return nThrows;
+    }
 	public double getPi() {
-		int nProcessors = Runtime.getRuntime().availableProcessors();
+		int nProcessors = 1;
 		ExecutorService executor = Executors.newWorkStealingPool(nProcessors); // Ensemble de process pour du vol de tâche
 
         // Représente les itérations parallèles
@@ -41,14 +45,36 @@ class PiMonteCarlo {
 }
 public class Assignment102 {
 	public static void main(String[] args) {
-		PiMonteCarlo PiVal = new PiMonteCarlo(100000);
-		long startTime = System.currentTimeMillis();
-		double value = PiVal.getPi();
-		long stopTime = System.currentTimeMillis();
-		System.out.println("Approx value:" + value);
-		System.out.println("Difference to exact value of pi: " + (value - Math.PI));
-		System.out.println("Error: " + (value - Math.PI) / Math.PI * 100 + " %");
-		System.out.println("Available processors: " + Runtime.getRuntime().availableProcessors());
-		System.out.println("Time Duration: " + (stopTime - startTime) + "ms");
-	}
+        PiMonteCarlo PiVal = new PiMonteCarlo(1000000);
+
+        long startTime = System.currentTimeMillis();
+        double value = PiVal.getPi();
+        long stopTime = System.currentTimeMillis();
+        long duration = stopTime - startTime;
+
+        double difference = value - Math.PI;
+        double errorPercent = difference / Math.PI * 100;
+
+        // Affichage console
+        System.out.println("Approx value: " + value);
+        System.out.println("Difference to exact pi: " + difference);
+        System.out.println("Error: " + errorPercent + " %");
+        System.out.println("Available processors: " + Runtime.getRuntime().availableProcessors());
+        System.out.println("Time Duration: " + duration + "ms\n");
+
+        // Écriture dans un fichier CSV dans le même dossier
+        String fileName = "pi_results.csv";
+        try (java.io.FileWriter writer = new java.io.FileWriter(fileName)) {
+            // Écrire l’en-tête
+            writer.write("temps_ms,pi_valeur,difference,error_percent,ntotal,nprocess\n");
+
+            // Écrire les résultats
+            writer.write(duration + "," + value + "," + difference + "," + errorPercent + "," + PiVal.getnThrows() +"," + Pi + "\n");
+
+            System.out.println("Résultats enregistrés dans : " + fileName);
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
