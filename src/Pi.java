@@ -40,7 +40,7 @@ class Master {
 	    }
     
 	// Run them and receive a collection of Futures
-	ExecutorService exec = Executors.newFixedThreadPool(numWorkers);
+	ExecutorService exec = Executors.newFixedThreadPool(numWorkers); // creer un ensemble de thread à parti d'un nombre de workers fixés
 	List<Future<Long>> results = exec.invokeAll(tasks);
 	long total = 0;
     
@@ -91,6 +91,6 @@ class Worker implements Callable<Long>
 		  double y = prng.nextDouble();
 		  if ((x * x + y * y) < 1)  ++circleCount;
 	      }
-	  return circleCount;
+	  return circleCount; // nombre de points tombés dans la cible
       }
 }
