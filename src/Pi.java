@@ -17,8 +17,9 @@ public class Pi
     {
 	long total=0;
 	// 10 workers, 50000 iterations eac
-	total = new Master().doRun(50000, 10);
+	total = new Master().doRun(10000000, 10);
 	System.out.println("total from Master = " + total);
+	
     }
 }
 
@@ -30,7 +31,7 @@ class Master {
     public long doRun(int totalCount, int numWorkers) throws InterruptedException, ExecutionException 
     {
 
-	long startTime = System.currentTimeMillis();
+	long startTime = System.nanoTime();
 
 	// Create a collection of tasks
 	List<Callable<Long>> tasks = new ArrayList<Callable<Long>>();
@@ -53,18 +54,44 @@ class Master {
 	    }
 	double pi = 4.0 * total / totalCount / numWorkers;
 
-	long stopTime = System.currentTimeMillis();
+	long stopTime = System.nanoTime();
+	long duration = stopTime - startTime;
 
 	System.out.println("\nPi : " + pi );
 	System.out.println("Error: " + (Math.abs((pi - Math.PI)) / Math.PI) +"\n");
 
 	System.out.println("Ntot: " + totalCount*numWorkers);
 	System.out.println("Available processors: " + numWorkers);
-	System.out.println("Time Duration (ms): " + (stopTime - startTime) + "\n");
+	System.out.println("Time Duration (ns): " + duration + "\n");
 
 	System.out.println( (Math.abs((pi - Math.PI)) / Math.PI) +" "+ totalCount*numWorkers +" "+ numWorkers +" "+ (stopTime - startTime));
 
 	exec.shutdown();
+
+
+	String fileName = "results.csv";	
+        try (java.io.FileWriter writer = new java.io.FileWriter(fileName, true)) { // true = append
+            // Vérifier si le fichier est vide pour écrire l’en-tête
+            java.io.File file = new java.io.File(fileName);
+            if (file.length() == 0) {
+            writer.write("temps_ns,pi_valeur,difference,error_percent,ntotal,n_workers\n");
+            }
+
+			double difference = pi - Math.PI;
+    		double errorPercent = difference / Math.PI * 100;
+    		long ntotal = (long) totalCount * (long) numWorkers;
+
+            // Écriture de la ligne de résultats
+            writer.write(duration + "," + pi + "," + difference + "," + errorPercent + "," 
+                     + ntotal + "," + numWorkers + "\n");	
+
+            System.out.println("Résultats ajoutés dans : " + fileName);
+
+        }
+        catch (java.io.IOException e) {
+        e.printStackTrace();
+        }
+
 	return total;
     }
 }
@@ -93,4 +120,7 @@ class Worker implements Callable<Long>
 	      }
 	  return circleCount; // nombre de points tombés dans la cible
       }
+
+
+	  
 }
