@@ -17,7 +17,7 @@ public class Pi
     {
 	long total=0;
 	// 10 workers, 50000 iterations eac
-	total = new Master().doRun(10000000, 10);
+	total = new Master().doRun(100000, 10);
 	System.out.println("total from Master = " + total);
 	
     }
@@ -31,7 +31,7 @@ class Master {
     public long doRun(int totalCount, int numWorkers) throws InterruptedException, ExecutionException 
     {
 
-	long startTime = System.nanoTime();
+	long startTime = System.currentTimeMillis();
 
 	// Create a collection of tasks
 	List<Callable<Long>> tasks = new ArrayList<Callable<Long>>();
@@ -54,15 +54,15 @@ class Master {
 	    }
 	double pi = 4.0 * total / totalCount / numWorkers;
 
-	long stopTime = System.nanoTime();
-	long duration = stopTime - startTime;
+	long stopTime = System.currentTimeMillis();
+	long duration_ms = stopTime - startTime;
 
 	System.out.println("\nPi : " + pi );
 	System.out.println("Error: " + (Math.abs((pi - Math.PI)) / Math.PI) +"\n");
 
 	System.out.println("Ntot: " + totalCount*numWorkers);
 	System.out.println("Available processors: " + numWorkers);
-	System.out.println("Time Duration (ns): " + duration + "\n");
+	System.out.println("Time Duration (ms): " + duration_ms + "\n");
 
 	System.out.println( (Math.abs((pi - Math.PI)) / Math.PI) +" "+ totalCount*numWorkers +" "+ numWorkers +" "+ (stopTime - startTime));
 
@@ -74,15 +74,15 @@ class Master {
             // Vérifier si le fichier est vide pour écrire l’en-tête
             java.io.File file = new java.io.File(fileName);
             if (file.length() == 0) {
-            writer.write("temps_ns,pi_valeur,difference,error_percent,ntotal,n_workers\n");
+            writer.write("temps_ms,pi_valeur,difference,error_percent,ntotal,n_workers\n");
             }
 
 			double difference = pi - Math.PI;
     		double errorPercent = difference / Math.PI * 100;
-    		long ntotal = (long) totalCount * (long) numWorkers;
+    		long ntotal = (long) totalCount;
 
             // Écriture de la ligne de résultats
-            writer.write(duration + "," + pi + "," + difference + "," + errorPercent + "," 
+            writer.write(duration_ms + "," + pi + "," + difference + "," + errorPercent + "," 
                      + ntotal + "," + numWorkers + "\n");	
 
             System.out.println("Résultats ajoutés dans : " + fileName);

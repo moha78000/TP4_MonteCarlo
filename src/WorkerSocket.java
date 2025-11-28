@@ -14,7 +14,7 @@ public class WorkerSocket {
      */
     public static void main(String[] args) throws Exception {
 
-        if (args.length > 0) port = Integer.parseInt(args[0]);
+	if (!("".equals(args[0]))) port=Integer.parseInt(args[0]);
 	    System.out.println(port);
         ServerSocket s = new ServerSocket(port);
         System.out.println("Server started on port " + port);
@@ -25,7 +25,7 @@ public class WorkerSocket {
 
         // PrintWriter pWrite for writing message to Master
         PrintWriter pWrite = new PrintWriter(new BufferedWriter(new OutputStreamWriter(soc.getOutputStream())), true);
-	String str;
+    	String str;
         while (isRunning) {
 	    str = bRead.readLine();          // read message from Master
 	    if (!(str.equals("END"))){
