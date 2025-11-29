@@ -17,7 +17,7 @@ public class Pi
     {
 	long total=0;
 	// 10 workers, 50000 iterations eac
-	total = new Master().doRun(100000, 10);
+	total = new Master().doRun(100000000 / 10, 10); 
 	System.out.println("total from Master = " + total);
 	
     }
@@ -28,8 +28,7 @@ public class Pi
  * and aggregates the results.
  */
 class Master {
-    public long doRun(int totalCount, int numWorkers) throws InterruptedException, ExecutionException 
-    {
+    public long doRun(int totalCount, int numWorkers) throws InterruptedException, ExecutionException {
 
 	long startTime = System.currentTimeMillis();
 
@@ -66,7 +65,7 @@ class Master {
 
 	System.out.println( (Math.abs((pi - Math.PI)) / Math.PI) +" "+ totalCount*numWorkers +" "+ numWorkers +" "+ (stopTime - startTime));
 
-	exec.shutdown();
+
 
 
 	String fileName = "results.csv";	
@@ -91,7 +90,7 @@ class Master {
         catch (java.io.IOException e) {
         e.printStackTrace();
         }
-
+	exec.shutdown();
 	return total;
     }
 }
