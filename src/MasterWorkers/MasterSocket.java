@@ -1,3 +1,4 @@
+package MasterWorkers;
 import java.io.*;
 import java.net.*;
 /** Master is a client. It makes requests to numWorkers.

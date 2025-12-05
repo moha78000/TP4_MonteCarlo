@@ -2,7 +2,9 @@ package MasterWorkers;
 import java.io.*;
 import java.net.*;
 import java.util.Random;
-import Pi.java.*; 
+
+import PiJava.Master;
+
 /**
  * Worker is a server. It computes PI by Monte Carlo method and sends 
  * the result to Master.
