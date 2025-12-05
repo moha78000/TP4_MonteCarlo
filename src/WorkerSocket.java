@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Random;
 /**
  * Worker is a server. It computes PI by Monte Carlo method and sends 
  * the result to Master.
@@ -26,18 +27,33 @@ public class WorkerSocket {
         // PrintWriter pWrite for writing message to Master
         PrintWriter pWrite = new PrintWriter(new BufferedWriter(new OutputStreamWriter(soc.getOutputStream())), true);
     	String str;
+        Random rand = new Random();
         while (isRunning) {
-	    str = bRead.readLine();          // read message from Master
-	    if (!(str.equals("END"))){
-		System.out.println("Server receives totalCount = " +  str);
-		
-		// compute
-		System.out.println("TODO : compute Monte Carlo and send total");
+            str = bRead.readLine();
 
-	        pWrite.println(str);         // send number of points in quarter of disk
-	    }else{
-		isRunning=false;
-	    }	    
+            if (str == null) continue;  
+
+            if (!str.equals("END")) {
+
+                int N = Integer.parseInt(str);
+                System.out.println("Worker reçoit N = " + N);
+
+                // ---- Monte Carlo ----
+                int nb_cible = 0;
+                for (int i = 0; i < N; i++) {
+                    double x = rand.nextDouble();
+                    double y = rand.nextDouble();
+                    if (x*x + y*y <= 1.0) nb_cible++;
+                }
+                // ----------------------
+
+                System.out.println("Worker dans la cible = " + nb_cible);
+                pWrite.println("" + nb_cible);
+
+            } else {
+                System.out.println("Worker reçoit END → arrêt.");
+                isRunning = false;
+            }
         }
         bRead.close();
         pWrite.close();

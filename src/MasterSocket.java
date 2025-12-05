@@ -66,8 +66,8 @@ public class MasterSocket {
        long stopTime, startTime;
 
        while (message_repeat.equals("y")){
-
-	   startTime = System.currentTimeMillis();
+	    total = 0;
+		startTime = System.currentTimeMillis();
 	   // initialize workers
 	   for(int i = 0 ; i < numWorkers ; i++) {
 	       writer[i].println(message_to_send);          // send a message to each worker
