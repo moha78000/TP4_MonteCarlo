@@ -8,7 +8,7 @@ public class MasterSocket {
     static int maxServer = 8;
     static final int[] tab_port = {25545, 25546, 25547, 25548, 25549, 25550, 25551, 25552};
     static String[] tab_total_workers = new String[maxServer];
-    static final String ip = "192.168.24.215";
+    static final String ip = "192.168.24.220";
     static BufferedReader[] reader = new BufferedReader[maxServer];
     static PrintWriter[] writer = new PrintWriter[maxServer];
     static Socket[] sockets = new Socket[maxServer];
@@ -96,7 +96,7 @@ public class MasterSocket {
 
             System.out.println((Math.abs((pi - Math.PI)) / Math.PI) + " " + totalCount * numWorkers + " " + numWorkers + " " + (stopTime - startTime));
 
-            String fileName = "erreurs_mw_weak.csv";
+            String fileName = "erreurs_mw_strong_autre_machine.csv";
             try (java.io.FileWriter writer = new java.io.FileWriter(fileName, true)) { // true = append
                 // Vérifier si le fichier est vide pour écrire l’en-tête
                 java.io.File file = new java.io.File(fileName);
