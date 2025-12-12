@@ -44,7 +44,7 @@ public class WorkerSocket {
                 
                 // Utilisation de Master.doRun pour le calcul
                 Master master = new Master();
-                long total = master.doRun(N, 2);
+                long total = master.doRun(N, 4);
 
               
                 

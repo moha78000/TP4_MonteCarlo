@@ -8,7 +8,7 @@ public class MasterSocket {
     static int maxServer = 8;
     static final int[] tab_port = {25545, 25546, 25547, 25548, 25549, 25550, 25551, 25552};
     static String[] tab_total_workers = new String[maxServer];
-    static final String ip = "127.0.0.1";
+    static final String ip = "192.168.24.215";
     static BufferedReader[] reader = new BufferedReader[maxServer];
     static PrintWriter[] writer = new PrintWriter[maxServer];
     static Socket[] sockets = new Socket[maxServer];
@@ -126,13 +126,14 @@ public class MasterSocket {
                 }
             }
 
-            for (int i = 0; i < numWorkers; i++) {
-                System.out.println("END");     // Send ending message
-                writer[i].println("END");
-                reader[i].close();
-                writer[i].close();
-                sockets[i].close();
-            }
+
+        }
+        for (int i = 0; i < numWorkers; i++) {
+            System.out.println("END");     // Send ending message
+            writer[i].println("END");
+            reader[i].close();
+            writer[i].close();
+            sockets[i].close();
         }
     }
 }
