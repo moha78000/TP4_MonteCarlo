@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 1. Charger le CSV
-file_name = "erreurs.csv"
+file_name = "erreurs_mw_strong.csv"
 df = pd.read_csv(file_name)  # colonnes: temps_ms,pi_valeur,erreur_avant,error_percent,ntotal,n_workers ou log10_error si tu l'as ajouté
 
 # 2. Si tu n'as PAS encore log10_error dans le CSV, on le calcule ici
