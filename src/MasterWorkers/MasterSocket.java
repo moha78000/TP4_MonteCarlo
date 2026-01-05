@@ -8,7 +8,7 @@ public class MasterSocket {
     static int maxServer = 8;
     static final int[] tab_port = {25545, 25546, 25547, 25548, 25549, 25550, 25551, 25552};
     static String[] tab_total_workers = new String[maxServer];
-    static final String ip = "192.168.24.220";
+    static final String ip = "127.0.0.1";
     static BufferedReader[] reader = new BufferedReader[maxServer];
     static PrintWriter[] writer = new PrintWriter[maxServer];
     static Socket[] sockets = new Socket[maxServer];
