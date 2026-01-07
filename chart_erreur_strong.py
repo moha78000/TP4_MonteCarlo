@@ -38,6 +38,9 @@ plt.plot(
     label='Speedup idéal'
 )
 
+# Affichage des valeurs
+for n, sp in zip(median_values['n_workers'], median_values['Speedup']):
+    plt.text(n, sp + 0.03, f"{sp:.2f}", ha='center')
 
 plt.title("Strong Scaling – Speedup médian vs Nombre de processus")
 plt.xlabel("Nombre de processus")
