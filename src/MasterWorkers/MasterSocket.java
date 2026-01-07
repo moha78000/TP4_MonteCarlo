@@ -30,15 +30,30 @@ public class MasterSocket {
         System.out.println("#########################################");
 
         System.out.println("\n How many workers for computing PI (< maxServer): ");
+
+        // strong-scaling
         int N_TOTAL = 160000000;
         int baseCount = 0;
         int reste = 0;
 
+
+
+        // weakscaling
+        //int CHARGE_PAR_WORKER = 160000000; // Chaque worker fera toujours 160M de points
+        //long nTotalActuel = 0;
+
         try {
             s = bufferRead.readLine();
             numWorkers = Integer.parseInt(s);
+
+            // strong-scaling
             baseCount = N_TOTAL / numWorkers;
             reste = N_TOTAL % numWorkers;
+
+            // weak-scaling
+            // nTotalActuel = (long) CHARGE_PAR_WORKER * numWorkers;
+
+
         } catch (IOException ioE) {
             ioE.printStackTrace();
         }
@@ -62,8 +77,8 @@ public class MasterSocket {
             writer[i] = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sockets[i].getOutputStream())), true);
         }
 
-      //  String message_to_send;
-       // message_to_send = String.valueOf(totalCount);
+        //  String message_to_send;
+        // message_to_send = String.valueOf(totalCount);
 
         String message_repeat = "y";
 
@@ -73,11 +88,18 @@ public class MasterSocket {
             total = 0;
             startTime = System.currentTimeMillis();
 
+            // strong scaling
             for (int i = 0; i < numWorkers; i++) {
-                // Si c'est le premier worker, on lui donne la base + le reste
+            // Si c'est le premier worker, on lui donne la base + le reste
                 int countToSend = (i == 0) ? (baseCount + reste) : baseCount;
                 writer[i].println(String.valueOf(countToSend));
             }
+
+            // weak scaling
+
+            //for (int i = 0; i < numWorkers; i++) {
+              //  writer[i].println(String.valueOf(CHARGE_PAR_WORKER));
+            //}
 
             //listen to workers's message
             for (int i = 0; i < numWorkers; i++) {
@@ -89,7 +111,11 @@ public class MasterSocket {
             for (int i = 0; i < numWorkers; i++) {
                 total += Integer.parseInt(tab_total_workers[i]);
             }
+            // strong scaling
             pi = 4.0 * (double) total / (double) N_TOTAL;
+
+            // weak scaling
+            //pi = 4.0 * (double) total / (double) nTotalActuel;
 
             stopTime = System.currentTimeMillis();
             long duration_ms = stopTime - startTime;
@@ -104,6 +130,7 @@ public class MasterSocket {
             System.out.println((Math.abs((pi - Math.PI)) / Math.PI) + " " + totalCount * numWorkers + " " + numWorkers + " " + (stopTime - startTime));
 
             String fileName = "erreurs_mw_strong.csv";
+            //String fileName = "erreurs_mw_weak.csv";
             try (java.io.FileWriter writer = new java.io.FileWriter(fileName, true)) { // true = append
                 // Vérifier si le fichier est vide pour écrire l’en-tête
                 java.io.File file = new java.io.File(fileName);
@@ -117,7 +144,12 @@ public class MasterSocket {
                 double erreur_avant_relative = erreur_avant / pi;
                 double absError = Math.abs(erreur_avant);
                 double log10Error = Math.log10(absError);
+
+                // strong scaling
                 long ntotal = (long) N_TOTAL;
+
+                // weak scaling
+                //long ntotal = (long) nTotalActuel;
 
                 // Écriture de la ligne de résultats
                 writer.write(duration_ms + "," + pi + "," + erreur_avant + "," + erreur_avant_relative + "," + log10Error + "," +
