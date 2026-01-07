@@ -2,7 +2,7 @@ package MasterWorkers;
 import java.io.*;
 import java.net.*;
 /** Master is a client. It makes requests to numWorkers.
- *   
+ *
  */
 public class MasterSocket {
     static int maxServer = 8;
@@ -30,10 +30,15 @@ public class MasterSocket {
         System.out.println("#########################################");
 
         System.out.println("\n How many workers for computing PI (< maxServer): ");
+        int N_TOTAL = 160000000;
+        int baseCount = 0;
+        int reste = 0;
+
         try {
             s = bufferRead.readLine();
             numWorkers = Integer.parseInt(s);
-            System.out.println(numWorkers);
+            baseCount = N_TOTAL / numWorkers;
+            reste = N_TOTAL % numWorkers;
         } catch (IOException ioE) {
             ioE.printStackTrace();
         }
@@ -57,8 +62,8 @@ public class MasterSocket {
             writer[i] = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sockets[i].getOutputStream())), true);
         }
 
-        String message_to_send;
-        message_to_send = String.valueOf(totalCount);
+      //  String message_to_send;
+       // message_to_send = String.valueOf(totalCount);
 
         String message_repeat = "y";
 
@@ -67,9 +72,11 @@ public class MasterSocket {
         while (message_repeat.equals("y")) {
             total = 0;
             startTime = System.currentTimeMillis();
-            // initialize workers
+
             for (int i = 0; i < numWorkers; i++) {
-                writer[i].println(message_to_send);          // send a message to each worker
+                // Si c'est le premier worker, on lui donne la base + le reste
+                int countToSend = (i == 0) ? (baseCount + reste) : baseCount;
+                writer[i].println(String.valueOf(countToSend));
             }
 
             //listen to workers's message
@@ -82,7 +89,7 @@ public class MasterSocket {
             for (int i = 0; i < numWorkers; i++) {
                 total += Integer.parseInt(tab_total_workers[i]);
             }
-            pi = 4.0 * total / totalCount / numWorkers;
+            pi = 4.0 * (double) total / (double) N_TOTAL;
 
             stopTime = System.currentTimeMillis();
             long duration_ms = stopTime - startTime;
@@ -96,7 +103,7 @@ public class MasterSocket {
 
             System.out.println((Math.abs((pi - Math.PI)) / Math.PI) + " " + totalCount * numWorkers + " " + numWorkers + " " + (stopTime - startTime));
 
-            String fileName = "erreurs_mw_strong_autre_machine.csv";
+            String fileName = "erreurs_mw_strong.csv";
             try (java.io.FileWriter writer = new java.io.FileWriter(fileName, true)) { // true = append
                 // Vérifier si le fichier est vide pour écrire l’en-tête
                 java.io.File file = new java.io.File(fileName);
@@ -110,7 +117,7 @@ public class MasterSocket {
                 double erreur_avant_relative = erreur_avant / pi;
                 double absError = Math.abs(erreur_avant);
                 double log10Error = Math.log10(absError);
-                long ntotal = (long) totalCount * (long) numWorkers;
+                long ntotal = (long) N_TOTAL;
 
                 // Écriture de la ligne de résultats
                 writer.write(duration_ms + "," + pi + "," + erreur_avant + "," + erreur_avant_relative + "," + log10Error + "," +
